@@ -71,9 +71,23 @@ not_cancelled %>% group_by(tailnum) %>% summarise(n = sum(distance))
 
 # 3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
 
-Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+# Because there are no flights which arrived but did not depart, we can use the following:
 
-Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
+flights %>% filter(!is.na(dep_delay))
 
-What does the sort argument to count() do. When might you use it?
+# 4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+
+
+# 5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
+
+# Carrier with the worst arrival delays
+
+flights %>% group_by(carrier) %>% summarise(avg_delay = mean(arr_delay,na.rm = TRUE)) %>% arrange(desc(avg_delay))
+
+# 6. What does the sort argument to count() do. When might you use it?
+
+# count sorts by descending order of n.
+
+
+
 
