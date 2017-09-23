@@ -13,14 +13,13 @@ flights2 <- select(flights, air_time, arr_time, dep_time)
 
 mutate(flights2,air_time,air_time2 = (arr_time - dep_time))
 
-The two sets of data aren’t the same because the both dep_time and arr_time are not measured in minutes. To fix this, we need to convert original both variables to minutes prior to subtracting them. 
-
+# The two sets of data aren’t the same because the both dep_time and arr_time are not measured in minutes. To fix this, we need to convert original both variables to minutes prior to subtracting them. 
 
 # 3.	Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
 
 select (flights, dep_time, sched_dep_time, dep_delay)
 
-dep_delay is equal to dep_time - sched_dep_time
+# dep_delay is equal to dep_time - sched_dep_time
 
 # 4.	Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
 
@@ -34,7 +33,7 @@ It returns a length 10 vector and a warning message. This is because the shorter
 
 ?trig
 
-cos(x), sin(x), tan(x), acos(x), asin(x), atan(x), atan2(y, x), cospi(x) ,sinpi(x), tanpi(x)
+# R provides these trigonometric functions: cos(x), sin(x), tan(x), acos(x), asin(x), atan(x), atan2(y, x), cospi(x) ,sinpi(x), tanpi(x)
 
 
 $ 5.6.7 Exercises
@@ -107,21 +106,22 @@ Try to avoid flying in the evening to avoid delay because evening hours have the
 
 # 4. For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.
 
+# total minutes of delay for each destination
 
+flights %>% group_by(dest) %>% filter(!is.na(dep_delay), dep_delay > 0) %>% summarise(tot_delay = sum(dep_delay))
+
+# proportion of the total delay for the destination of a flight 
+
+flights %>% filter(!is.na(dep_delay)) %>% group_by(tailnum, dest) %>% summarise(m= mean(dep_delay > 0), n = n()) %>% arrange(desc(m))
 
 # 5. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using lag() explore how the delay of a flight is related to the delay of the immediately preceding flight.
 
-
-
 # 6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
-
-
 
 # 7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 
-
+flights %>% group_by(dest) %>% filter(n_distinct(carrier)>=2) %>% group_by(carrier) %>% summarise(possible_transfers = n_distinct(dest)) %>% arrange(desc(possible_transfers))
 
 # 8. For each plane, count the number of flights before the first delay of greater than 1 hour.
 
-
-
+flights %>% group_by(tailnum) %>% filter(arr_delay > 60) %>% mutate(row_num = row_number()) %>% summarize(first_1hour_delay = first(row_num) - 1)
