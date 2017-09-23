@@ -36,3 +36,44 @@ It returns a length 10 vector and a warning message. This is because the shorter
 
 cos(x), sin(x), tan(x), acos(x), asin(x), atan(x), atan2(y, x), cospi(x) ,sinpi(x), tanpi(x)
 
+
+$ 5.6.2 Exercises
+
+# 1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:
+
+# A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time.
+
+flights %>% group_by(flight) %>% summarise(early15mins = sum(arr_delay <= -15, na.rm = TRUE) / n(), late15mins = sum(arr_delay >= 15, na.rm = TRUE) / n()) %>% filter (early15mins == 0.5, late15mins == 0.5)
+
+# A flight is always 10 minutes late.
+
+flights %>% group_by(flight) %>% summarise(late10mins = sum(arr_delay == 10, na.rm = TRUE) / n()) %>% filter(late10mins == 1)
+
+# A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
+
+flights %>% group_by(flight) %>% summarise(early30mins = sum(arr_delay <= -30, na.rm = TRUE) / n(), late30mins = sum(arr_delay >= 30, na.rm = TRUE) / n())  %>% filter(early30mins == 0.5, late30mins == 0.5)
+
+# 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
+
+flights %>% group_by(flight) %>% summarise(on_time = sum(arr_delay == 0, na.rm = TRUE) / n(), 2_hours_late = sum(arr_delay >= 120, na.rm = TRUE) / n()) %>% filter(on_time == 0.99, 2_hours_late == 0.01)
+
+# Which is more important: arrival delay or departure delay?
+
+# Since the question is  subjective, the answer is it depends on the individual.
+
+# 2. Come up with another approach that will give you the same output as not_cancelled %>% count(dest) and not_cancelled %>% count(tailnum, wt = distance) (without using count()).
+
+not_cancelled <- flights %>% filter(!is.na(arr_delay),!is.na(dep_delay))
+
+not_cancelled %>% group_by(dest) %>% summarise(n= n())
+
+not_cancelled %>% group_by(tailnum) %>% summarise(n = sum(distance))
+
+# 3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
+
+Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+
+Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
+
+What does the sort argument to count() do. When might you use it?
+
