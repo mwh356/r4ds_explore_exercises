@@ -116,17 +116,29 @@ ggplot(data = mpg) +
 
 # 6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?
 
-# It is easier to read and looks better on a computer screen.
+# It is easier to read and looks better on computer screen.
+
 
 # 3.6.1 Exercises
 
 # 1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
 
+# Line chart – geom_Iine()
+# Boxplot – geom_boxplot()
+# Histogram – geom_histogram()
+# Area chart – geom_area()
+
 # 2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + geom_point() + geom_smooth(se = FALSE)
 
 # 3. What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?
 
+# show.legend = False hids the legend of the plot. Probably you used it to show the usefullness of show.legend; can't think of any other reason of why you would want to remove the legend.
+
 # 4. What does the se argument to geom_smooth() do?
+
+# It draws the confident interval
 
 # 5. Will these two graphs look different? Why/why not?
 
@@ -137,7 +149,62 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 ggplot() + 
   geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
   geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+
+# No, because they have the same variables and geom_function. 
+
 # 6. Recreate the R code necessary to generate the following graphs.
+
+# Find the R codes below: 
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point() + geom_smooth(se = FALSE)
+ 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point() + geom_smooth(aes(group = drv), se = FALSE)
+ 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point() + geom_smooth(aes(color = drv), se = FALSE, show.legend = TRUE)
+ 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point(aes(color = drv)) + geom_smooth(se = FALSE)
+ 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point(aes(color = drv)) + geom_smooth(aes(linetype = drv),se = FALSE, show.legend = TRUE)
+ 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point(size = 4, color = "white") + geom_point(aes(color = drv))
+ 
+
+# 3.7.1 Exercises
+
+# 1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+
+# The default geom for stat summary is geom_pointrange(). Rewritten:
+
+ggplot(data = diamonds) + geom_pointrange(mapping = aes(x = cut, y = depth), stat = "summary", fun.ymin = min, fun.ymax = max, fun.y = median) 
+
+# 2. What does geom_col() do? How is it different to geom_bar()?
+
+# geom_col() creates a bar chart similar to geom_bar(). geom_bar uses stat_count while geom_col uses stat_identity.
+# geom_col makes the heights of the bars to represent the value in the data while geom_bar makes the height of the bar 
+# proportional to the number of cases in each group. 
+
+# 3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?
+
+# 4. What variables does stat_smooth() compute? What parameters control its behaviour?
+
+?stat_mooth
+# stat_smooth computes 4 variables:
+y - predicted value
+ymin - lower pointwise confidence interval around the mean
+ymax - upper pointwise confidence interval around the mean
+se - standard error
+
+# 5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
+
+
+
+
 
 
 
