@@ -189,8 +189,6 @@ ggplot(diamonds) + geom_histogram(mapping = aes (x = price), binwidth = 90)
 
 # 1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
 
-
-
 # 2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?
 
 ggplot(data = diamonds, mapping = aes( x = carat, y = price)) + geom_point() + geom_smooth()
@@ -229,7 +227,13 @@ ggplot(data = diamonds, mapping = aes(x = price)) + geom_freqpoly(aes(color = cu
 
 # 6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.
 
-?ggbeeswarm
+geom_quasirandom() & geom_beeswarm
+
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + geom_quasirandom()
+
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + geom_beeswarm()
+
+# These plots look really similar to geom_violin but using jittered plots instead of shapes. 
 
 # 7.5.2.1 Exercises
 
@@ -237,7 +241,11 @@ ggplot(data = diamonds, mapping = aes(x = price)) + geom_freqpoly(aes(color = cu
 
 # 2. Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
 
+flights %>% filter(is.na(arr_delay) == FALSE) %>% group_by(month, dest) %>% summarize(avg_delay = mean(arr_delay)) %>% ggplot(diamonds,mapping = aes(x = month, y = dest)) + geom_tile(aes(fill = avg_delay))
+
+# It has too many destinations and the color of the fill (blue) makes the plot difficult to read. To fix this, I suggest layering filters to decrease the number destinations in the plot and changing the fill color.
+
 # 3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
 
-
+# Since we have a lot of diamond colors, it make sense for us to use it in the x axis. 
 
