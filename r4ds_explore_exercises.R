@@ -2,10 +2,144 @@ library(tidyverse)
 library(dplyr)
 library(nycflights13)
 
+# Mason Halim
+
+# 3.2.4 Exercises
+
+# 1. Run ggplot(data = mpg). What do you see?
+
+# Nothing
+
+# 2. How many rows are in mpg? How many columns?
+
+nrow(mpg)
+ncol(mpg)
+
+# 234 rows and 11 columns
+
+# 3. What does the drv variable describe? Read the help for ?mpg to find out.
+
+# drv: f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+
+# 4. Make a scatterplot of hwy vs cyl.
+
+# ggplot(data = mpg) + geom_point(mapping = aes (x = hwy, y = cyl))
+
+# 5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = class, y = drv))
+
+# Because both class and  drv are categorical types of data, the points would overlap with one another and hence, making it not useful. 
 
 
+# 3.31 Exercises
 
-# Chapter 1 
+# 1. What’s gone wrong with this code? Why are the points not blue?
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
+
+# Answer: need to adjust the position of the "color" See the right code below:
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = displ, y = hwy), color = "blue")
+
+# 2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
+
+# Categorical = manufacturer, model, trans, drv, class, fl
+# Continuous = year, cyl, cty, hwy
+# Categorical variables are <chr> while continuous variables are <int>
+
+# 3. Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = cyl, y = cty, color = hwy))
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = cyl, y = cty, size = hwy))
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = cyl, y = cty, shape = hwy))
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = cyl, y = cty, size = hwy))
+
+# Continous variables are pictured on a scale or color spectrum whereas categorical variables are pictured on a different categories.
+
+# 4. What happens if you map the same variable to multiple aesthetics?
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = cyl, y = cty, color = hwy, size = cyl))
+
+# It would create 2 legends on the right hand side of the chart
+
+# 5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)
+
+ggplot(data = mpg) + geom_point(mapping = aes (x = cyl, y = cty, stroke = hwy))
+
+# 6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ < 5)?
+
+ggplot(data = mpg) + geom_point (mapping = aes (x = cty, y = hwy, colour = displ < 5))
+
+# The aesthetic mapping work as a normal expressions. For this instance, it creates a false or true statement  – if the engine displacement is fewer than 5 then it is true (blue), if it’s equal or more than 5 then it’s FALSE (red)
+
+# 3.5.1 Exercises
+
+# 1. What happens if you facet on a continuous variable?
+
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_wrap(~ cty, nrow = 2)
+
+# R would create separate facets/windows for every values.
+
+# 2. What do the empty cells in plot with facet_grid(drv ~ cyl) mean? How do they relate to this plot?
+
+# The empty cells mean that there’s no car within the sample with that combination of drv and cyl. 
+
+# 3. What plots does the following code make? What does . do?
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+Take the first faceted plot in this section:
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+
+# . acts as no variable so that we can have a single dimension facet.
+
+# 4. What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+
+# Faceting makes separate/split view of each variable which helps when we want to analyze a larger set of data within individual facet.
+# While color aesthetics would work well with smaller set of data, it could be a challenge to interpret larger data set using color because the colors get too many.
+
+# 5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?
+
+# In facet_wrap, nrow and ncol determine the number of rows and columns within the facets.
+
+# 6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?
+
+# It is easier to read and looks better on a computer screen.
+
+# 3.6.1 Exercises
+
+# 1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
+
+# 2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+
+# 3. What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?
+
+# 4. What does the se argument to geom_smooth() do?
+
+# 5. Will these two graphs look different? Why/why not?
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+# 6. Recreate the R code necessary to generate the following graphs.
+
+
 
 # 5.5.2 Exercises
 
