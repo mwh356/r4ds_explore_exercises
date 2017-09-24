@@ -1,3 +1,7 @@
+library(tidyverse)
+library(dplyr)
+library(nycflights13)
+
 
 # Chapter 1 
 
@@ -36,7 +40,7 @@ It returns a length 10 vector and a warning message. This is because the shorter
 # R provides these trigonometric functions: cos(x), sin(x), tan(x), acos(x), asin(x), atan(x), atan2(y, x), cospi(x) ,sinpi(x), tanpi(x)
 
 
-$ 5.6.7 Exercises
+# 5.6.7 Exercises
 
 # 1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:
 
@@ -87,7 +91,7 @@ flights %>% group_by(carrier) %>% summarise(avg_delay = mean(arr_delay,na.rm = T
 
 # count sorts by descending order of n.
 
-5.7.1 Exercise 
+# 5.7.1 Exercise 
 
 # 1. Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.
 
@@ -95,14 +99,14 @@ flights %>% group_by(carrier) %>% summarise(avg_delay = mean(arr_delay,na.rm = T
 
 flights %>% group_by(tailnum) %>% summarise(on_time = sum(arr_delay <= 30, na.rm = TRUE) / n(), mean_arr_delay = mean(arr_delay, na.rm = TRUE), flights = n()) %>% arrange(on_time, desc(mean_arr_delay))
 
-# Many of these planes never arrived on time at all; therefore, making
+# The plane that has the worse on-time record in terms of average delay is N833MH
 
 # 3. What time of day should you fly if you want to avoid delays as much as possible?
 
 flights %>%
 +     ggplot(aes(x=factor(hour), fill=arr_delay>5 | is.na(arr_delay))) + geom_bar()
 
-Try to avoid flying in the evening to avoid delay because evening hours have the highest proportion of delay to on time ratio.
+# To avoid delay try to fly in the evening hours.
 
 # 4. For each destination, compute the total minutes of delay. For each, flight, compute the proportion of the total delay for its destination.
 
@@ -125,3 +129,80 @@ flights %>% group_by(dest) %>% filter(n_distinct(carrier)>=2) %>% group_by(carri
 # 8. For each plane, count the number of flights before the first delay of greater than 1 hour.
 
 flights %>% group_by(tailnum) %>% filter(arr_delay > 60) %>% mutate(row_num = row_number()) %>% summarize(first_1hour_delay = first(row_num) - 1)
+
+
+# 7.3.4 Exercises
+
+# 1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = x), binwidth = 0.5)
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = y), binwidth = 0.5)
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = z), binwidth = 0.5)
+
+# x and y values are distributed in between 5 and 10. 
+
+# 2. Explore the distribution of price. Do you discover anything unusual or surprising? (Hint: Carefully think about the binwidth and make sure you try a wide range of values.)
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = price), binwidth = 10)
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = price), binwidth = 100)
+
+# The numbers of diamonds decrease as the price gets higher. 
+
+# 3. How many diamonds are 0.99 carat? How many are 1 carat? What do you think is the cause of the difference?
+
+diamonds %>% count(carat == 0.99)
+
+diamonds %>% count(carat == 1)
+
+# There are 1558 1-carat diamonds and 23 0.99-carat diamonds. The discrepancy could be due to because the demand for 1 carat diamonds is significantly higher than 0.99 carat diamonds. 1 carat also sounds so much better than 0.99 carats. 
+
+# 4. Compare and contrast coord_cartesian() vs xlim() or ylim() when zooming in on a histogram. What happens if you leave binwidth unset? What happens if you try and zoom so only half a bar shows?
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = carat))
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = carat)) + coord_cartesian(xlim = c(0,2))
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = carat)) + coord_cartesian(ylim = c(0,1000))
+
+# xlim and ylim remove the observations outside the values set
+# cord_cartesian() adjust the zoom of the plot 
+# R would automatically adjust the bin sizes if we left the binwidth unset. 
+
+# 7.4.1 Exercises
+
+# 1. What happens to missing values in a histogram? What happens to missing values in a bar chart? Why is there a difference?
+
+ggplot(diamonds) + geom_histogram(mapping = aes (x = price), binwidth = 90)
+
+# Missing values won't show up in histogram and they left gaps in the plot distribution as they can't be drawn on continuous scale. 
+
+# 2. What does na.rm = TRUE do in mean() and sum()?
+
+# It omits missing values and exclude them from the calculation. 
+
+# 7.5.1.1 Exercises
+
+# 1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
+
+
+# 2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?
+
+
+# 3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?
+
+
+# 4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
+
+
+# 5. Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?
+
+
+# 6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.
+
+
+
+
+
