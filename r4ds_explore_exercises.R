@@ -131,7 +131,9 @@ flights %>% group_by(dest) %>% filter(n_distinct(carrier)>=2) %>% group_by(carri
 flights %>% group_by(tailnum) %>% filter(arr_delay > 60) %>% mutate(row_num = row_number()) %>% summarize(first_1hour_delay = first(row_num) - 1)
 
 
+
 # 7.3.4 Exercises
+
 
 # 1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.
 
@@ -188,16 +190,31 @@ ggplot(diamonds) + geom_histogram(mapping = aes (x = price), binwidth = 90)
 # 1. Use what you’ve learned to improve the visualisation of the departure times of cancelled vs. non-cancelled flights.
 
 
+
 # 2. What variable in the diamonds dataset is most important for predicting the price of a diamond? How is that variable correlated with cut? Why does the combination of those two relationships lead to lower quality diamonds being more expensive?
 
+ggplot(data = diamonds, mapping = aes( x = carat, y = price)) + geom_point() + geom_smooth()
+
+# After comparing multiple variables with price, carat is the most important variable for predicting the price of a diamond.
+
+ggplot(data = diamonds, mapping = aes(x = cut, y = carat)) + geom_boxplot()
+
+# Lower quality cut diamonds (good/fair) can more expensive than the ideal cut diamonds because they are heavier/ have more carats. Carat is a also the most important predictor of price.
 
 # 3. Install the ggstance package, and create a horizontal boxplot. How does this compare to using coord_flip()?
 
+ggplot(data = diamonds, mapping = aes(x = carat, y = cut)) + geom_boxplot() + coord_flip()
+
+ggplot(data = diamonds, mapping = aes(x = carat, y = cut)) + geom_boxploth()
+
+# They look exactly the same. 
 
 # 4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
 
 
+
 # 5. Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?
+
 
 
 # 6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.
