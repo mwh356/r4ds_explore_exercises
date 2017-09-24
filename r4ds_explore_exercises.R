@@ -247,5 +247,21 @@ flights %>% filter(is.na(arr_delay) == FALSE) %>% group_by(month, dest) %>% summ
 
 # 3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
 
-# Since we have a lot of diamond colors, it make sense for us to use it in the x axis. 
+# Since there are more types of diamond colors than types cut, it make sense for us to put color in the x axis. 
+
+# 7.5.3.1 Exercises
+
+# 1. Instead of summarising the conditional distribution with a boxplot, you could use a frequency polygon. What do you need to consider when using cut_width() vs cut_number()? How does that impact a visualisation of the 2d distribution of carat and price?
+
+# 2. Visualise the distribution of carat, partitioned by price.
+
+# 3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
+
+# 4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
+
+# 5. Two dimensional plots reveal outliers that are not visible in one dimensional plots. For example, some points in the plot below have an unusual combination of x and y values, which makes the points outliers even though their x and y values appear normal when examined separately.
+
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = x, y = y)) +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
 
