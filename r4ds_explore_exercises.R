@@ -211,15 +211,33 @@ ggplot(data = diamonds, mapping = aes(x = carat, y = cut)) + geom_boxploth()
 
 # 4. One problem with boxplots is that they were developed in an era of much smaller datasets and tend to display a prohibitively large number of “outlying values”. One approach to remedy this problem is the letter value plot. Install the lvplot package, and try using geom_lv() to display the distribution of price vs cut. What do you learn? How do you interpret the plots?
 
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + geom_boxplot()
 
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + geom_lv()
 
 # 5. Compare and contrast geom_violin() with a facetted geom_histogram(), or a coloured geom_freqpoly(). What are the pros and cons of each method?
 
+ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + geom_violin()
 
+ggplot(data = diamonds, mapping = aes(x = price)) + geom_histogram() + facet_wrap(~ cut)
+
+ggplot(data = diamonds, mapping = aes(x = price)) + geom_freqpoly(aes(color = cut))
+
+# Faceted histogram. pros: shows skewness clearly and the segmented view makes it easy to analyze each variable. cons: hard to compare since the y axis varies across plots
+# Violin. Pros: useful when used to visualized and compare the distributions of the data. Cons: I'm not familiar with this. 
+# Freqpoly. Pros: it makes comparison easier since all the variables in one chart. Cons: could be hard to read when we have too many variables. 
 
 # 6. If you have a small dataset, it’s sometimes useful to use geom_jitter() to see the relationship between a continuous and categorical variable. The ggbeeswarm package provides a number of methods similar to geom_jitter(). List them and briefly describe what each one does.
 
+?ggbeeswarm
 
+# 7.5.2.1 Exercises
+
+# 1. How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?
+
+# 2. Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
+
+# 3. Why is it slightly better to use aes(x = color, y = cut) rather than aes(x = cut, y = color) in the example above?
 
 
 
