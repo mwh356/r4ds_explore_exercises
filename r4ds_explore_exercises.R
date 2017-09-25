@@ -2,7 +2,6 @@ library(tidyverse)
 library(dplyr)
 library(nycflights13)
 
-# Created by: Mason Halim
 
 # 3.2.4 Exercises
 
@@ -113,11 +112,12 @@ ggplot(data = mpg) +
 # 5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?
 
 # In facet_wrap, nrow and ncol determine the number of rows and columns within the facets.
+# as.table determines how the facets are going to be filled (TRUE = highest value at bottom-right, FALSE = highest value at top-right)
+# dir determines the direction of the panels (horizontal vs vertical).
 
 # 6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?
 
 # It is easier to read and looks better on computer screen.
-
 
 # 3.6.1 Exercises
 
@@ -189,10 +189,12 @@ ggplot(data = diamonds) + geom_pointrange(mapping = aes(x = cut, y = depth), sta
 
 ?stat_mooth
 # stat_smooth computes 4 variables:
-y - predicted value
-ymin - lower pointwise confidence interval around the mean
-ymax - upper pointwise confidence interval around the mean
-se - standard error
+# y - predicted value
+# ymin - lower pointwise confidence interval around the mean
+# ymax - upper pointwise confidence interval around the mean
+# se - standard error
+
+# Parameters that control its behaviors are method which control the smoothing method employed, se which display confidence interval, etc.
 
 # 5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
 
@@ -202,12 +204,205 @@ ggplot(data = diamonds) +
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
 
+# The proportions for each cut for these two graphs are calculated using the complete dataset, rather than each levels of cut because no group = 1 is set.  
+
+# 3.8.1 Exercises
+
+# 1. What is the problem with this plot? How could you improve it?
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+
+# The problem with the plot above is “overplotting” because many of the data points overlap. We can fix this by jittering the points.
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_point(position = "jitter")
+
+# 2. What parameters to geom_jitter() control the amount of jittering?
+
+# Height & width
+
+# 3. Compare and contrast geom_jitter() with geom_count().
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_jitter()
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_count()
+
+# geom_jitter shakes and moves the points to prevent them from overlapping while geom_count() counts, combines, and map the points 
+# to a size single point to tell us the number of observations that occupy the area.
+
+# 4. What’s the default position adjustment for geom_boxplot()? Create a visualisation of the mpg dataset that demonstrates it.
+
+# The default position adjustment for geom_boxplot() is position_dodge().
+
+ggplot(data = mpg, mapping = aes(x = class, y = hwy, color = drv)) +  geom_boxplot(position = "dodge")
 
 
+# 3.9.1 Exercises
+
+# 1. Turn a stacked bar chart into a pie chart using coord_polar().
+
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = clarity)) + coord_polar()
+
+# 2. What does labs() do? Read the documentation.
+
+?labs
+
+# It modifies axis, legend, and plot labels. 
+
+# 3. What’s the difference between coord_quickmap() and coord_map()?
+
+# coord_map projects a portion of the earth, which is approximately spherical, onto a flat 2D plane. coord_map is computationally intensive since map projections do not preserve straight lines.
+# On the flip side, coord_quickmap is a quick approximation that does preserve straight lines. It works best for smaller areas closer to the equator.
+
+# 4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord_fixed() important? What does geom_abline() do?
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
+
+# This plot tells us that vehicles with high city mileage also has high highway mileage and vice versa. 
+# Additionally, vehicles tend to have higher highway mileage than city. 
+# coord_fixed() adjusts the aspect ratio and draws equal intervals on the x and y axes so that 1 unit of x axis is equal to 1 unit of y axis.  
+# geom_abline() draws the slope line. 
 
 
+# 4.4 Practice
+
+# 1. Why does this code not work?
+
+# The program didn’t work because of a typo. It should be my_variable instead of my_var1able
+
+# 2. Tweak each of the following R commands so that they run correctly:
+library(tidyverse)
+
+ggplot(dota = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+fliter(mpg, cyl = 8)
+filter(diamond, carat > 3)
+
+# corrections:
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+filter(mpg, cyl==8)
+
+filter(diamonds, carat > 3)
+
+# 3. Press Alt + Shift + K. What happens? How can you get to the same place using the menus?
+
+# this opens the keyboard shortcut windows. Use the following steps to access them: Help -> Keyboard Shortcut -> Help
+
+# 5.2.4 Exercise
+1.	filter(flights, arr_delay >= 120)
+2.	filter (flights, dest == "IAH" | dest == "HOU")
+3.	filter(flights, carrier == "UA" | carrier == "AA" | carrier == "DL")
+4.	filter(flights, month >= 7, month <= 9)
+5.	filter(flights, arr_delay >= 120 & dep_delay <= 0)
+6.	filter(flights, dep_delay >=60, dep_delay - arr_delay >= 30)
+7.	filter(flights,dep_time >= 0, dep_time <= 600)
+
+# 1. Find all flights that:
+
+# 1. Had an arrival delay of two or more hours
+filter(flights, arr_delay >= 120)
+
+# 2. Flew to Houston (IAH or HOU)
+filter (flights, dest == "IAH" | dest == "HOU")
+
+# 3. Were operated by United, American, or Delta
+filter(flights, carrier == "UA" | carrier == "AA" | carrier == "DL")
+
+# 4. Departed in summer (July, August, and September)
+filter(flights, month >= 7, month <= 9)
+
+# 5. Arrived more than two hours late, but didn’t leave late
+filter(flights, arr_delay >= 120 & dep_delay <= 0)
+
+# 6. Were delayed by at least an hour, but made up over 30 minutes in flight
+filter(flights, dep_delay >=60, dep_delay - arr_delay >= 30)
+
+# 7. Departed between midnight and 6am (inclusive)
+filter(flights,dep_time >= 0, dep_time <= 600)
+
+# 2. Another useful dplyr filtering helper is between(). What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+
+# For instance it can help us simplify the code:
+
+filter(flights,dep_time >= 0, dep_time <= 600)
+# to 
+filter(flights, between(dep_time, 0, 600))
+
+# 3. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
+
+filter(flights, is.na(dep_time))
+
+# 8255 flights are missing dept time. Because they don’t have arrival and departure time, these are most likely cancelled flights.
+
+# 4. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)
+
+# NA ^ 0 - basic math, any number to the 0th power is 1.
+# NA | TRUE - any number "or" true is true. Since one of the condition is TRUE, the result is TRUE. 
+# FALSE & NA - any number "and" false is FALSE. 
+# NA * 0 is NA - not sure why though, since I think any number * 0 should be zero. 
 
 
+5.3.1 Exercises
+
+# 1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
+
+arrange(flights,!is.na(arr_time))
+
+# 2. Sort flights to find the most delayed flights. Find the flights that left earliest.
+
+# most delayed 
+
+arrange(flights ,desc(arr_delay))
+
+# left earliest 
+
+arrange(flights, dep_delay)
+
+# 3. Sort flights to find the fastest flights.
+
+arrange(flights, desc(distance / air_time))
+
+# 4. Which flights travelled the longest? Which travelled the shortest?
+
+# travelled longest 
+
+arrange(flights, desc(distance))
+
+# travelled shortest
+
+arrange(flights, distance)
+
+# 5.4.1 Exercises
+
+# 1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
+
+select(flights,dep_time,dep_delay,arr_time,arr_delay)
+select(flights,ends_with("delay"))
+select(flights,contains("delay"))
+select(flights,starts_with("dep"),starts_with("arr"))
+
+# 2. What happens if you include the name of a variable multiple times in a select() call?
+
+# it’s only included one time in the new data table
+
+# 3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+
+# Answer: one_of() allows us to select varibles in character vector based on their names. It makes the following function shorter and simpler:
+
+select(flights, one_of(vars))
+
+# 4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
+select(flights, contains("TIME")
+
+# No, because select helpers ignore case by default. We can change that default by using the function “ignore.case = FALSE” 
+
+       
 # 5.5.2 Exercises
 
 # 1.	Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
@@ -240,7 +435,7 @@ It returns a length 10 vector and a warning message. This is because the shorter
 
 ?trig
 
-# R provides these trigonometric functions: cos(x), sin(x), tan(x), acos(x), asin(x), atan(x), atan2(y, x), cospi(x) ,sinpi(x), tanpi(x)
+# R provides the following trigonometric functions: cos(x), sin(x), tan(x), acos(x), asin(x), atan(x), atan2(y, x), cospi(x) ,sinpi(x), tanpi(x)
 
 
 # 5.6.7 Exercises
@@ -265,7 +460,7 @@ flights %>% group_by(flight) %>% summarise(on_time = sum(arr_delay == 0, na.rm =
 
 # Which is more important: arrival delay or departure delay?
 
-# Since the question is  subjective, the answer is it depends on the individual.
+# Since the question is subjective, the answer is that it depends on the individual.
 
 # 2. Come up with another approach that will give you the same output as not_cancelled %>% count(dest) and not_cancelled %>% count(tailnum, wt = distance) (without using count()).
 
@@ -277,13 +472,18 @@ not_cancelled %>% group_by(tailnum) %>% summarise(n = sum(distance))
 
 # 3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay) ) is slightly suboptimal. Why? Which is the most important column?
 
-# Because there are no flights which arrived but did not depart, we can use the following:
+# Because flights can't arrive without departing, we can use the following:
 
 flights %>% filter(!is.na(dep_delay))
 
 # 4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
 
+prop_cancelled_flights_by_day <- flights %>% group_by(year, month, day) %>% summarise(proportion_cancelled = sum(is.na(dep_delay)) / n(), avg_delay = mean(dep_delay, na.rm = TRUE))
 
+ggplot(data = prop_cancelled_flights_by_day, mapping = aes(avg_delay, proportion_cancelled)) + geom_point() + geom_smooth()
+
+# Based on the plot, there are positive correlation between proportion of cancelled flights and average delay.
+       
 # 5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n()))
 
 # Carrier with the worst arrival delays
@@ -333,10 +533,19 @@ flights %>% group_by(dest) %>% filter(n_distinct(carrier)>=2) %>% group_by(carri
 
 flights %>% group_by(tailnum) %>% filter(arr_delay > 60) %>% mutate(row_num = row_number()) %>% summarize(first_1hour_delay = first(row_num) - 1)
 
+# 6.3 Practice
 
+# 1. Go to the RStudio Tips twitter account, https://twitter.com/rstudiotips and find one tip that looks interesting. Practice using it!
 
+ # Just learned extra shortcuts! One of them is to jump quickly between the source and console via keyboard: Ctrl+1 to focus source, Ctrl+2 to focus console. 
+       
+# 2. What other common mistakes will RStudio diagnostics report? Read https://support.rstudio.com/hc/en-us/articles/205753617-Code-Diagnostics to find out.
+
+# Common mistake diagnostics: warn if variable used has no definition in scope, warn if variable is defined but not used, etc.
+# Diagnostics for other languages such as C / C++, JavaScript, Python, and CSS
+
+   
 # 7.3.4 Exercises
-
 
 # 1. Explore the distribution of each of the x, y, and z variables in diamonds. What do you learn? Think about a diamond and how you might decide which dimension is the length, width, and depth.
 
@@ -442,6 +651,19 @@ ggplot(data = diamonds, mapping = aes(x = cut, y = price)) + geom_beeswarm()
 
 # 1. How could you rescale the count dataset above to more clearly show the distribution of cut within colour, or colour within cut?
 
+# To better show the distribution, we can calculating the percentages of n and add that to the tile fill. 
+# Distribution of cut within color
+diamonds %>% count(color, cut) %>%  group_by(color) %>% 
+  mutate() %>% mutate(perc = n/sum(n)) %>% 
+  ggplot(mapping = aes (x = color, y = cut)) + 
+  geom_tile(mapping = aes(fill = perc))
+       
+# Distribution of color within cut
+diamonds %>% count(color, cut) %>%  group_by(cut) %>% 
+  mutate() %>% mutate(perc = n/sum(n)) %>% 
+  ggplot(mapping = aes (x = cut, y = color)) + 
+  geom_tile(mapping = aes(fill = perc))
+
 # 2. Use geom_tile() together with dplyr to explore how average flight delays vary by destination and month of year. What makes the plot difficult to read? How could you improve it?
 
 flights %>% filter(is.na(arr_delay) == FALSE) %>% group_by(month, dest) %>% summarize(avg_delay = mean(arr_delay)) %>% ggplot(diamonds,mapping = aes(x = month, y = dest)) + geom_tile(aes(fill = avg_delay))
@@ -471,7 +693,7 @@ ggplot(diamonds, aes(price, carat)) + geom_boxplot(aes(group = cut_width(price, 
 # 3. How does the price distribution of very large diamonds compare to small diamonds. Is it as you expect, or does it surprise you?
 
 # The price distribution of large diamonds has more variability than small diamonds.  
-# I'm kinda surprised but probably other factors such as cut, quality, clarity, and dimensions have higher impact to the price of large diamonds.
+# I'm kinda surprised but probably other factors such as cut, quality, clarity, and dimensions have higher impact to the price of larger diamonds.
 
 # 4. Combine two of the techniques you’ve learned to visualise the combined distribution of cut, carat, and price.
 
