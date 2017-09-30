@@ -1,0 +1,68 @@
+library(tidyverse)
+
+# 10.5 Exercises 
+
+# 1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).
+
+is.tibble(mtcars)
+
+print(mtcars)
+
+# if the object is a tibble it will only print the first 10 rows.
+
+# 2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?
+
+df <- data.frame(abc = 1, xyz = "a")
+
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+
+dx <- tibble( abc = 1, xyz = "a")
+
+dx$x
+dx[, "xyz"]
+dx[[1]]
+dx[, c("abc", "xyz")]
+
+# df does partial matching. the tibble returns a NULL.
+# df returns a factor and tibble returns a data frame
+# both of them returns the same results.
+
+# 3. If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+
+var <- "uco"
+
+var$uco
+var[["uco"]]
+
+# 4. Practice referring to non-syntactic names in the following data frame by:
+# Extracting the variable called 1.
+# Plotting a scatterplot of 1 vs 2.
+# Creating a new column called 3 which is 2 divided by 1.
+# Renaming the columns to one, two and three.
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`)))
+
+annoying$`1`
+
+ggplot(annoying, aes(`1`, `2`)) + geom_point()
+
+annoying <- annoying %>% mutate( `3`= `2` / `1`)
+
+annoying %>% rename( one = `1`, two = `2`, three = `3`)
+
+
+# 5. What does tibble::enframe() do? When might you use it?
+
+?tibble
+
+# tibble::enframe converts atomic vectors to data frames/tibbles, and vice versa
+
+# 6. What option controls how many additional column names are printed at the footer of a tibble?
+
+tibble.max_extra_cols
+
+
+
