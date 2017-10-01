@@ -80,7 +80,6 @@ read_delim(file, delim = "|")
 # delim, quote, escape_backslash, escape_double, col_names, col_types, locale, na,
 # quoted_na, n_max, guess_max, and progress.
 
-
 # 3. What are the most important arguments to read_fwf()?
 
 # The most important arguments to read_fwf are file and col_positions 
@@ -104,6 +103,70 @@ read_csv("a,b\n1,2\na,b")
 read_csv("a;b\n1;3")
 # Using ";" instead of "," to separate the fields.
 
+# 11.3.5 Exercises
+
+# 1. What are the most important arguments to locale()?
+
+?locale
+
+# The lists of the most important arguments are as follows: date_names, date_format, time_format
+# decimal_mark, grouping_mark, tz, and encoding.
 
 
+# 2. What happens if you try and set decimal_mark and grouping_mark to the same character? What happens to the default value of grouping_mark when you set decimal_mark to “,”? What happens to the default value of decimal_mark when you set the grouping_mark to “.”?
+
+locale(grouping_mark = ".", decimal_mark = ".")
+
+# If I  try to set the decimal and grouping marks to the same character, it will return an error.
+
+locale(decimal_mark = ",")
+
+# If I  try to set the decimal_mark to comma ",", the group_mark will turn to period "."
+
+locale(grouping_mark = ",")
+
+# If I  try to set the grouping_mark to comma ",", the decimal_mark will turn to period "."
+
+# 3. I didn’t discuss the date_format and time_format options to locale(). What do they do? Construct an example that shows when they might be useful.
+
+# date_format and time_format arguments provide default date and time format. 
+
+# 4. If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
+
+# Fortunately, I live in the US...
+
+# 5. What’s the difference between read_csv() and read_csv2()?
+
+# read_csv reads comma delimited files (,) while read_csv2 reads semicolon separated files (;).
+
+# 6. What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out.
+
+# The most common encodings used around the world and Europe is UTF-8 and ASCII. 
+# In Asia, the encodings used vary by countries but the one that has the highest market share and widely used in China is Guobiao/ GB 2312.
+
+# 7. Generate the correct format string to parse each of the following dates and times:
+  
+d1 <- "January 1, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+t1 <- "1705"
+t2 <- "11:15:10.12 PM"
+
+# See the answers below:
+
+parse_date(d1, "%B %d, %Y")
+
+parse_date(d2,"%Y-%b-%d")
+
+parse_date(d3,"%d-%b-%Y")
+
+parse_date(d4,"%B %d (%Y)")
+
+parse_date(d5,"%B %d (%Y)")
+
+parse_time(t1, "%H%M")
+
+parse_time(t2)
 
