@@ -4,13 +4,15 @@ library(dplyr)
 library(stringr)
 library(nycflights13)
 
-table1
-
 
 # 12.2.1 Exercises
 
 # 1. Using prose, describe how the variables and observations are organised in each of the sample tables.
 
+# Table 1, each row is a variable of the cases & population for each country and year
+# Table 2, each row is a variable of the type (cases or population) for each country and year and the value of the variable.
+# Table 3, each row is a variable of the rate (cases/population) for each country and year
+# Table 4, the data is split into 2 tables, one table for population and the other one is for cases. 
 
 # 2. Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
   # 1. Extract the number of TB cases per country per year.
@@ -183,6 +185,10 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 # 3. Compare and contrast separate() and extract(). Why are there three variations of separation (by position, by separator, and with groups), but only one unite?
 
 ?extract
+?separate
+
+# extract() uses regex to split string of text.   
+# There are just multiple more ways to separate a string of characters compared to unite.
 
 
 # Exercise 12.5.1
@@ -203,22 +209,6 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 
 
 # Exercise 12.6.1
-
-
-who1 <- who %>% gather(new_sp_m014:newrel_f65, key = "key", value = "cases", na.rm = TRUE)
-
-count(who1, key)
-
-who2 <- who1 %>% mutate(key = str_replace(key, "newrel", "new_rel"))
-
-who3 <- separate(who2, key, into = c("new", "type", "sexage"), sep = "_")
-
-who4 <- who3 %>% select(-new, -iso2, -iso3)
-
-who5 <- separate(who4, sexage, into = c("sex", "age"), sep = 1 )
-
-who5
-
 
 # 1. In this case study I set na.rm = TRUE just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What's the difference between an NA and zero?
 
@@ -329,64 +319,6 @@ diamonds %>%
 
 # No primary key for diamonds
 
-
-# Exercise 13.4.6
-
-
-flights
-airlines
-
-
-flights2 <- flights %>%
-  select(year:day, hour, origin, dest, tailnum, carrier)
-
-flights2 %>% left_join(airlines, by = "carrier")
-
-flights2 %>% mutate(name = airlines$name[match(carrier, airlines$carrier)])
-
-
-x <- tribble(
-  ~key, ~val_x,
-  1, "x1",
-  2, "x2",
-  3, "x3"
-)
-y <- tribble(
-  ~key, ~val_y,
-  1, "y1",
-  2, "y2",
-  4, "y3"
-)
-
-x %>% inner_join(y, by = "key")
-
-
-x <- tribble(
-  ~key, ~val_x,
-  1, "x1",
-  2, "x2",
-  2, "x3",
-  1, "x4"
-)
-y <- tribble(
-  ~key, ~val_y,
-  1, "y1",
-  2, "y2"
-)
-
-left_join(x, y, by = "key")
-
-x
-y
-
-flights2
-airports
-
-flights2 %>% 
-  left_join(airports, c("dest" = "faa"))
-
-
-
 # 13.4.6 Exercises
 
  # 1. Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays. Here’s an easy way to draw a map of the United States:
@@ -480,3 +412,63 @@ flights %>%
 # High average delays across all airports and it got worse later in the day with an average delay of 100 minutes.
 # Apparently, there was a pretty big derecho storm on June 12-13, 2013. This seems to be the sole driver behind the high average delay.
 
+
+# 13.5.1 Exercises
+
+# 1. What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
+
+
+flights %>% 
+  filter(is.na(tailnum))
+
+# All the flights that have a missing tailnum don't have actual dep_time or arr_time. This means that they are cancelled flights.
+
+View(flights %>% 
+  anti_join(planes, by = "tailnum") %>% 
+  count(tailnum, sort = TRUE))
+
+# Majority of the tail numbers that don't have matching records in planes are from AA and MQ carriers. 
+
+
+# 2. Filter flights to only show flights with planes that have flown at least 100 flights.
+
+
+flights100 <- flights %>% 
+  group_by(tailnum) %>% 
+  count() %>% 
+  filter(n > 100)
+
+flights %>% 
+  semi_join(flights100, by = "tailnum")
+
+flights %>% filter(tailnum == "N0EGMQ") %>% count()
+
+
+# 3. Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
+
+fueleconomy::vehicles %>% 
+  left_join(fueleconomy::common, by = c("model", "make")) %>% 
+  arrange(desc(n))
+
+# 4. Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?
+
+# not sure how to do this...
+
+# 5. What does anti_join(flights, airports, by = c("dest" = "faa")) tell you? What does anti_join(airports, flights, by = c("faa" = "dest")) tell you?
+
+anti_join(flights, airports, by = c("dest" = "faa"))
+
+# This gives us the list of flight destinations that aren't in the FAA list. 
+
+anti_join(airports, flights, by = c("faa" = "dest"))
+
+# this give us a list of FAA airports that don't have flight data.
+
+# 6. You might expect that there’s an implicit relationship between plane and airline, because each plane is flown by a single airline. Confirm or reject this hypothesis using the tools you’ve learned above.
+
+flights %>% 
+  group_by(tailnum) %>% 
+  summarise(carriers = length(unique(carrier))) %>% 
+    filter(carriers > 1)
+
+# Some planes were flown by two different carriers. The tail number of these planes contains AT and PQ.
