@@ -1,6 +1,5 @@
 library(tidyverse)
 library(stringr)
-install.packages("htmlwidgets")
 library(htmlwidgets)
 
 # 14.2.5 Exercises -----------------------------------------------------------------------------------------------------------------------------------------
@@ -27,19 +26,16 @@ str_c(c("xyz", "abc"), collapse = "/")
 
 # odd number of character 
 
-str_sub("abecd", str_length(df)/2, 2)
+df <-  c("abcdef", "xyzabc")
 
+str_sub(df, floor((str_length(df)+1)/2), ceiling((str_length(df)+1)/2))
 
-df <-  "abcdef"
-
-str_length(df)/2
-
-str_sub(df, str_length(df)/2, str_length(df)/2)
 
 # 4. What does str_wrap() do? When might you want to use it?
 
 # str_wrap() wrap strings into nicely formatted paragraphs of a certain widths. 
-# We want to use to when we want to modify existing whitespace in order to wrap a paragraph of text so that the length of each line as a similar as possible.
+# We want to use to when we want to modify existing whitespace in order to wrap a paragraph of text so that the length 
+# of each line as a similar as possible. In short, printing long texts....
 
 # 5. What does str_trim() do? What’s the opposite of str_trim()?
 
@@ -133,11 +129,13 @@ str_view(words, "q.", match = TRUE)
 
 str_view(words, "q[^u]", match = TRUE)
 
-# True for the "word" dataset
+# The statement above is true for the "word" dataset
 
 # 4. Write a regular expression that matches a word if it’s probably written in British English, not American English.
 
 # Seems hard...
+
+str_view(words, "ize", match = TRUE)
 
 # 5. Create a regular expression that will match telephone numbers as commonly written in your country.
 
@@ -267,8 +265,8 @@ gss_cat %>%
 
 levels(gss_cat$rincome)
 
-# The order of the levels of rincome is in descending order based on the income value but separating "Not applicable" from 
-# "No answer" "Don't know" and "Refused" and not grouping them is arbitrary. I believe they should be grouped together.
+# The order of the levels of rincome is principled because it is in descending order based on the income value but separating "Not applicable" from 
+# "No answer" "Don't know" and "Refused" and not grouping them together can be considered as arbitrary.
 
 levels(gss_cat$marital)
 
@@ -284,23 +282,21 @@ gss_cat %>%
   count(race) %>% 
   arrange(desc(n))
 
-# The order of the levels of race is principled because they are ordered (ascending) based of the count of people within each race group. 
+# The order of the levels of race is principled because they are in ascending order based of the count of race group. 
 
 levels(gss_cat$relig)
 
-# The order of the levels of relig is arbitrary because I think they need to group "No answer" "Don't know"
-# "None" and "No Applicable" together and place them in the front/back. They should also be grouping branches of Christian
-# such as "Orthodox-Christian", "Catholic", "Christian" and "Protestant" together. 
-
 levels(gss_cat$denom)
 
-# The order of the levels of denom is also arbitrary.
+levels(gss_cat$partyid)
 
-levels(gss_cat$denom)
+# The order of the levels of relig, partyid, and denom are arbitrary. 
+
 
 # 3. Why did moving “Not applicable” to the front of the levels move it to the bottom of the plot?
 
 # Because the level value of "Not Applicable" became 1 after we move it to the front. 
+
 
 # 15.5.1 Exercises
 
