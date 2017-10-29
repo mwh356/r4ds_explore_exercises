@@ -87,7 +87,9 @@ masonhalim@gmail.com . 408-643-2914 (c)
 2. Using the R Markdown quick reference, figure out how to:
 
 Add a footnote: [^1]
+
 Add a horizontal rule: *** 
+
 Add a block quote: > 
 
 
