@@ -1,0 +1,259 @@
+---
+title: "R4DS Wrangle Exercise 27"
+output: html_document
+---
+***
+
+### 27.2.1 Exercises
+
+1. Create a new notebook using File > New File > R Notebook. Read the instructions. Practice running the chunks. Verify that you can modify the code, re-run it, and see modified output.
+
+Confirmed
+
+
+2. Create a new R Markdown document with File > New File > R Markdown. Knit it by clicking the appropriate button. Knit it by using the appropriate keyboard short cut. Verify that you can modify the input and see the output update.
+
+Confirmed
+
+3. Compare and contrast the R notebook and R markdown files you created above. How are the outputs similar? How are they different? How are the inputs similar? How are they different? What happens if you copy the YAML header from one to the other?
+
+In terms of inputs, both files have a lot of similarities such as having the YAML headers and chunks of R code as well as capable of generating html documents.
+Couple differences I noticed are as follows: 
+First, the value of the output files are different between the two, R notebook generates nb.html file while R markdown generates html file. 
+Second, the output html files from R notebook offers the options to "show all code", "hide all code", and "download RMD" on the top right corner. 
+Third, unlike R Markdown, when we try to generate the output, R notebook doesn't automatically run the chunks of code in the page (meaning that we have to execute 
+the code manually in R Notebook if you want to show a plot or summary).
+
+
+4. Create one new R Markdown document for each of the three built-in formats: HTML, PDF and Word. Knit each of the three documents. How does the output differ? How does the input differ? (You may need to install LaTeX in order to build the PDF output - RStudio will prompt you if this is necessary.)
+
+We just need to change the output file type in the YAML header for R to generate different file formats. 
+
+```{r, eval = FALSE}
+output: html_document # HTML 
+```
+
+```{r, eval = FALSE}
+output: pdf_document # PDF 
+```
+
+```{r, eval = FALSE}
+output: word_document # Microsoft Word 
+```
+
+***
+
+### 27.3.1 Exercises
+
+1. Practice what you've learned by creating a brief CV. The title should be your name, and you should include headings for (at least) education or employment. 
+Each of the sections should include a bulleted list of jobs/degrees. Highlight the year in bold.
+
+-------------------------
+
+## Mason Halim
+
+5009 Charlotte Place . Charlotte, NC 28277  
+masonhalim@gmail.com . 408-643-2914 (c)
+
+***
+
+### Education
+
+***
+
+**University of North Carolina at Chapel Hill**   
+
+* Bachelor of Science in Business Administration. 
+* Graduated January 20XX.
+
+***
+
+### Professional Experience
+
+***
+
+**Red Ventures**, February 20XX - Present
+
+* Responsible For XXXXXXX
+* Responsible For XXXXXXX
+
+**Kenan Flagler Business School**, January 20XX - December 20XX
+
+* Enter responsibility 1 here
+* Enter responsibility 2 here
+
+***
+
+2. Using the R Markdown quick reference, figure out how to:
+
+Add a footnote: [^1]
+Add a horizontal rule: *** 
+Add a block quote: > 
+
+
+3. Copy and paste the contents of diamond-sizes.Rmd from https://github.com/hadley/r4ds/tree/master/rmarkdown in to a local R markdown document. Check that you can run it, then add text after the frequency polygon that describes its most striking features.
+
+---
+title: "Diamond sizes"
+date: 2016-08-25
+output: html_document
+---
+
+```{r setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+
+smaller <- diamonds %>% 
+  filter(carat <= 2.5)
+```
+
+We have data about `r nrow(diamonds)` diamonds. Only 
+`r nrow(diamonds) - nrow(smaller)` are larger than
+2.5 carats. The distribution of the remainder is shown
+below:
+
+```{r, echo = TRUE}
+smaller %>% 
+  ggplot(aes(carat)) + 
+  geom_freqpoly(binwidth = 0.01)
+```
+
+The frequency poligon shows that there are higher amount of diamonds that are at increments of 0.5 carat and round numbers. This could be that there are higher demand of diamonds because 0.5 diamonds or 2 carat diamonds just sounds so much better/prestigious than 0.46 carat or 1.99 carat diamonds. 
+
+***
+
+### 27.4.7 Exercises
+
+1. Add a section that explores how diamond sizes vary by cut, colour, and clarity. Assume you're writing a report for someone who doesn't know R, and instead of setting echo = FALSE on each chunk, set a global option.
+
+####Diamond sizes by cut, color, and clarity
+
+```{r, echo=FALSE}
+
+
+diamonds %>% 
+  ggplot(aes(cut, carat)) +
+  geom_boxplot()
+
+diamonds %>% 
+  ggplot(aes(color, carat)) +
+  geom_boxplot()
+
+diamonds %>% 
+  ggplot(aes(clarity, carat)) +
+  geom_boxplot()
+
+
+```
+
+
+
+2. Download diamond-sizes.Rmd from https://github.com/hadley/r4ds/tree/master/rmarkdown. Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes.
+
+
+```{r, include = FALSE}
+library(ggplot2)
+library(dplyr)
+
+smaller <- diamonds %>% 
+  filter(carat <= 2.5)
+```
+
+We have data about `r nrow(diamonds)` diamonds. Only 
+`r nrow(diamonds) - nrow(smaller)` are larger than
+2.5 carats. The distribution of the remainder is shown
+below:
+
+```{r, echo = FALSE}
+smaller %>% 
+  ggplot(aes(carat)) + 
+  geom_freqpoly(binwidth = 0.01)
+```
+
+**The table below displays the largest 20 diamonds and their most important attributes**
+```{r, include = FALSE}
+
+diamonds1 <- diamonds %>% 
+  arrange(desc(carat)) 
+
+# sort the diamonds dataset by carat
+```
+
+```{r, echo = FALSE}
+
+diamonds1[1:20,] %>% 
+  select(carat, cut, clarity, color, price)
+
+```
+
+
+3. Modify diamonds-sizes.Rmd to use comma() to produce nicely formatted output. Also include the percentage of diamonds that are larger than 2.5 carats.
+
+
+```{r}
+
+comma <- function(x) format(x, digits = 2, big.mark = ",")
+
+diamonds %>% 
+  mutate( price = comma(price)) #every other metrics than price looks good to me..
+
+
+```
+
+`r comma((nrow(diamonds) - nrow(smaller))/nrow(diamonds)*100)` percent of diamonds are larger than 2.5 carats.
+
+4. Set up a network of chunks where d depends on c and b, and both b and c depend on a. Have each chunk print lubridate::now(), set cache = TRUE, then verify your understanding of caching.
+
+```{r, cache = TRUE}
+
+#a 
+
+diamonds %>% 
+  print()
+
+lubridate::now()
+
+
+```
+
+```{r, cache = TRUE}
+#b
+
+smaller <- diamonds %>% 
+  filter(carat <= 2.5) %>% 
+  print()
+
+lubridate::now()
+
+
+```
+
+```{r, cache = TRUE}
+#c
+
+bigger <- diamonds %>% 
+  filter(carat > 2.5) %>% 
+  print()
+
+lubridate::now()
+
+
+```
+
+```{r, cache = TRUE}
+#d
+
+smaller %>% 
+  ggplot(aes(carat)) +
+  geom_freqpoly(binwidth = 0.01)
+
+bigger %>% 
+  ggplot(aes(carat)) +
+  geom_freqpoly(binwidth = 0.01)
+
+
+
+```
+
+
+
